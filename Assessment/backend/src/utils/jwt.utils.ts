@@ -1,10 +1,17 @@
-import jwt from 'jsonwebtoken';
-import { IUser } from '../models/user.model';
+import jwt, { Secret, SignOptions } from "jsonwebtoken";
+import { IUser } from "../models/user.model";
 
-const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'access_secret_key';
-const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'refresh_secret_key';
-const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES_IN || '15m';
-const REFRESH_EXPIRES = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
+const ACCESS_SECRET: Secret =
+  process.env.JWT_ACCESS_SECRET || "access_secret_key";
+
+const REFRESH_SECRET: Secret =
+  process.env.JWT_REFRESH_SECRET || "refresh_secret_key";
+
+const ACCESS_EXPIRES: SignOptions["expiresIn"] =
+  (process.env.JWT_ACCESS_EXPIRES_IN as SignOptions["expiresIn"]) || "15m";
+
+const REFRESH_EXPIRES: SignOptions["expiresIn"] =
+  (process.env.JWT_REFRESH_EXPIRES_IN as SignOptions["expiresIn"]) || "7d";
 
 export interface TokenPayload {
   userId: string;
@@ -38,5 +45,6 @@ export const verifyRefreshToken = (token: string): TokenPayload => {
 export const generateTokens = (user: IUser) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
+
   return { accessToken, refreshToken };
 };
